@@ -49,6 +49,7 @@ class GameRenderer(private val serviceHub: AppServiceHub) : SingletonSerializeAs
                                 .updates
                                 .flatMap { from(it.produced).first() }
                                 .map { it.state.data }
+                                .delay(1, TimeUnit.SECONDS)
                                 .map { render(it.participants, emptyList(), null, ourIdentity) },
                         serviceHub.vaultService.trackBy(BetState::class.java)
                                 .updates
@@ -68,7 +69,7 @@ class GameRenderer(private val serviceHub: AppServiceHub) : SingletonSerializeAs
                         .switchMap {
                             just(it).concatWith(just(it)
                                     .delaySubscription(500, TimeUnit.MILLISECONDS)
-                                    .repeat(3))
+                                    .repeat(2))
                         }
                         .doOnNext {
                             println(it)
